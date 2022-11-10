@@ -7,10 +7,10 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "book_details")
+@Table(name = "book_details_mappedby_table")
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private int bookId;
     private String bookName;
     private String author;

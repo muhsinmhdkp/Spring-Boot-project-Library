@@ -13,10 +13,10 @@ import java.util.Set;
  */
 @Entity
 @Data
-@Table(name = "student_details")
+@Table(name = "student_details_mappedby_table")
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private int studentId;
     private int age;
     private long rollNo;
@@ -26,7 +26,7 @@ public class Student {
 
 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "student")
     //@JoinColumn(name = "book_id")
     private Set<Book> bookSet;
 }

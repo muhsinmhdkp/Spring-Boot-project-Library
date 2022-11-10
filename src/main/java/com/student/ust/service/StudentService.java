@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -49,6 +51,7 @@ public class StudentService {
      * @return the list
      */
     public List<Student>  getAllStudent(){
+        //System.out.println(studentRepository.findByName("muhsin").getModifyDate());
         return studentRepository.findAll();
     }
 
@@ -68,5 +71,16 @@ public class StudentService {
         updateStudent.setModifyDate(LocalDateTime.now());
         studentRepository.save(updateStudent);
         return updateStudent;
+    }
+
+    public Student studentByName(String name) {
+        System.out.println("Hi");
+        //List<Student> namelist = studentRepository.findByNameStartingWith("muh");
+        //Iterator itr =namelist.iterator();
+        //while (itr.hasNext()){
+          //  System.out.println(itr.next());
+        //}
+
+        return studentRepository.findByName(name);
     }
 }
