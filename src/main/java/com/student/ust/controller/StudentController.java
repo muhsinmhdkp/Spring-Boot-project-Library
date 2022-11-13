@@ -1,6 +1,8 @@
 package com.student.ust.controller;
 
 import com.student.ust.entity.Student;
+import com.student.ust.exception.InvalidEmailException;
+import com.student.ust.exception.InvalidPasswordException;
 import com.student.ust.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,18 @@ public class StudentController {
             }
         }
 
-    @GetMapping("/students/{name}")
+        @GetMapping("/studentsreq")
+        public ResponseEntity<Student> getRequest(@RequestParam(name = "id") Integer studentId){
+        try{
+            Student student = studentService.getStudentById(studentId);
+            return  new ResponseEntity<Student>(student, HttpStatus.OK);
+        }
+        catch (NoSuchElementException e){
+            return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
+        }
+        }
+
+    /**@GetMapping("/students/{name}")
     public ResponseEntity<Student> get(@PathVariable String name){
         try{
             Student student = studentService.studentByName(name);
@@ -51,6 +64,7 @@ public class StudentController {
             return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
         }
     }
+    **/
 
     /**
      * Get response entity.
@@ -74,9 +88,16 @@ public class StudentController {
      * @param student the student
      */
     @PostMapping("/students")
-    public void add
-            (@RequestBody Student student){
-    studentService.saveStudent(student);
+    public ResponseEntity<Student> add (@RequestBody Student student){
+
+        try {
+                studentService.saveStudent(student);
+                return new ResponseEntity<Student>(HttpStatus.OK);
+            }
+        catch (InvalidEmailException | InvalidPasswordException e){
+            return new ResponseEntity<Student>(HttpStatus.PRECONDITION_FAILED);
+
+        }
     }
 
     /**

@@ -1,15 +1,21 @@
 package com.student.ust.service;
 
 import com.student.ust.entity.Student;
+import com.student.ust.exception.InvalidEmailException;
+import com.student.ust.exception.InvalidPasswordException;
 import com.student.ust.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The type Student service.
@@ -29,8 +35,8 @@ public class StudentService {
      * @param id the id
      * @return the student by id
      */
-    public Student getStudentById(Integer id) {
-        return studentRepository.findById(id).orElse(null);
+    public Student getStudentById(Integer id) throws NoSuchElementException {
+        return studentRepository.findById(id).orElseThrow(()-> new NoSuchElementException ());
     }
 
     /**
@@ -38,12 +44,64 @@ public class StudentService {
      *
      * @param student the student
      */
-    public void saveStudent(Student student) {
+    public void saveStudent(Student student) throws InvalidEmailException,InvalidPasswordException{
+
         student.setCreatedDate(LocalDateTime.now());
         student.setModifyDate(student.getCreatedDate());
-        studentRepository.save(student);
-    }
 
+
+        String email = student.getEmail();
+        String regexEmail = "^([A-Za-z0-9_.-]+)@([a-z]+)\\.([a-z]+)$";
+        Pattern pattern = Pattern.compile(regexEmail);
+        Matcher matcher = pattern.matcher(email);
+
+        String password = student.getPassword();
+        String regexPassword =  "^(?=(?:.*\\d){3,})(?=\\S+$)(?=.*[@#$%^&+=])(?=(?:.*[A-Za-z]){3,})(?=.*[A-Z]).{8,}$";
+        //String regexPassword =  "^(?=.*\\d)(?=\\S+$)(?=.*[@#$%^&+=])(?=.*[a-z])(?=.*[A-Z]).{8,10}$";
+        Pattern pattern1 = Pattern.compile(regexPassword);
+        Matcher matcher1 = pattern1.matcher(password);
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(10, new SecureRandom());
+        String encodedpassword = bCryptPasswordEncoder.encode(student.getPassword());
+
+
+        if (matcher.matches()){
+            if(matcher1.matches()) {
+                student.setPassword(encodedpassword);
+                studentRepository.save(student);
+            }
+            else {
+                throw new InvalidPasswordException();
+            }
+        }
+        else if (matcher1.matches()) {
+            if (matcher.matches()) {
+                student.setPassword(encodedpassword);
+                studentRepository.save(student);
+            }
+            else {
+                throw new InvalidEmailException();
+            }
+        }
+        else  if (matcher.matches()==false){
+            throw new InvalidEmailException();
+        }
+        else {
+            throw new InvalidPasswordException();
+        }
+        }
+
+
+
+
+    /**
+     * public void saveStudent(Student student) {
+     *
+     *         student.setCreatedDate(LocalDateTime.now());
+     *         student.setModifyDate(student.getCreatedDate());
+     *         studentRepository.save(student);
+     *     }
+     */
 
     /**
      * Get all student list.
@@ -73,7 +131,18 @@ public class StudentService {
         return updateStudent;
     }
 
-    public Student studentByName(String name) {
+    /**
+     * public boolean validateEmail(String email) {
+     *         String regex = "^([A-Za-z0-9_.-]+)@([a-z]+)\\\\.([a-z]+)$";
+     *         Pattern pattern = Pattern.compile(regex);
+     *         Matcher matcher = pattern.matcher(email);
+     *         return matcher.matches();
+     *     }
+     */
+
+
+
+    /**public Student studentByName(String name) {
         System.out.println("Hi");
         //List<Student> namelist = studentRepository.findByNameStartingWith("muh");
         //Iterator itr =namelist.iterator();
@@ -83,4 +152,5 @@ public class StudentService {
 
         return studentRepository.findByName(name);
     }
+     **/
 }

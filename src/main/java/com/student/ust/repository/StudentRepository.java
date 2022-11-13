@@ -15,4 +15,6 @@ public interface StudentRepository extends
     //List<Student> findByNameStartingWith(String muh);
 
     Student findByName(String name);
+
+
 }

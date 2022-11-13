@@ -24,6 +24,9 @@ public class Student {
     private LocalDateTime createdDate;
     private LocalDateTime modifyDate;
 
+    private String email;
+    private String password;
+
 
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "student")
