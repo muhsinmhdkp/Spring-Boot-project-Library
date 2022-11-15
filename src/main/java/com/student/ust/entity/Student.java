@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+
 /**
  * The type Student.
  */
@@ -24,7 +25,10 @@ public class Student {
     private LocalDateTime createdDate;
     private LocalDateTime modifyDate;
 
+    @Column(name = "email", nullable = false,unique = true)
     private String email;
+
+    @Column(name = "password",nullable = false )
     private String password;
 
 

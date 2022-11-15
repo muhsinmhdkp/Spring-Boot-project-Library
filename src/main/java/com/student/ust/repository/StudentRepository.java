@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.zip.ZipFile;
 
+/**
+ * The interface Student repository.
+ */
 @Repository
 public interface StudentRepository extends
         JpaRepository<Student,Integer> {
@@ -14,6 +17,12 @@ public interface StudentRepository extends
 
     //List<Student> findByNameStartingWith(String muh);
 
+    /**
+     * Find by name student.
+     *
+     * @param name the name
+     * @return the student
+     */
     Student findByName(String name);
 
 
